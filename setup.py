@@ -23,6 +23,7 @@ setup(
     install_requires=[
         "requests",
         "click",
+        "solidlab-perftest-common",
     ],
     setup_requires=["pytest-runner", "black"],
     tests_require=["pytest"],

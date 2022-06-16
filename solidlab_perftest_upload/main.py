@@ -4,7 +4,7 @@ import sys
 import requests
 import click
 
-from solidlab_perftest_upload.upload_artifact import (
+from solidlab_perftest_common.upload_artifact import (
     upload_artifact_file,
     upload_artifact,
 )
