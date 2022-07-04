@@ -1,6 +1,8 @@
 import logging
 import mimetypes
 import sys
+from typing import Optional
+
 import requests
 import click
 
@@ -48,6 +50,12 @@ def validate_perftest_endpoint(ctx, param, value: str) -> str:
     help="Mime-type of file (default: auto based on extension)",
 )
 @click.option(
+    "-t",
+    "--auth-token",
+    required=False,
+    help="Authentication token for talking to solidlab-perftest-server perftest endpoint",
+)
+@click.option(
     "--type",
     "attach_type",
     type=click.Choice(["GRAPH", "CSV", "LOG", "OTHER"], case_sensitive=False),
@@ -57,7 +65,13 @@ def validate_perftest_endpoint(ctx, param, value: str) -> str:
 @click.option("--sub-type", prompt=True, type=click.STRING, help="The subtype.")
 @click.option("--description", prompt=True, help="Description of the file.")
 def main(
-    perftest_endpoint, filename, mime_type, attach_type, sub_type, description
+    perftest_endpoint,
+    filename,
+    mime_type,
+    attach_type,
+    sub_type,
+    description,
+    auth_token: Optional[str],
 ) -> int:
     with requests.Session() as session:
         attachment_id, attachment_url = upload_artifact_file(
@@ -68,6 +82,7 @@ def main(
             description=description,
             filename=filename,
             content_type=mime_type,
+            auth_token=auth_token,
         )
         click.echo(
             f"Uploaded: {sub_type} {attach_type} to {attachment_id} at {attachment_url}"
@@ -77,4 +92,4 @@ def main(
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(auto_envvar_prefix="PERFTEST_UPLOAD"))
