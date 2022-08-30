@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="solidlab-perftest-upload",
-    version="1.1.0",
+    version="1.2.0",
     description="SolidLab Perftest Upload",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -23,7 +23,7 @@ setup(
     install_requires=[
         "requests",
         "click",
-        "solidlab-perftest-common >=2.0.0, <3",
+        "solidlab-perftest-common >=3.0.0, <4",
     ],
     setup_requires=["pytest-runner", "black"],
     tests_require=["pytest"],

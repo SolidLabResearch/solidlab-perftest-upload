@@ -9,6 +9,7 @@ import click
 from solidlab_perftest_common.upload_artifact import (
     upload_artifact_file,
     upload_artifact,
+    validate_artifact_endpoint,
 )
 
 logger = logging.getLogger(__name__)
@@ -16,31 +17,9 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 logger.setLevel(logging.DEBUG)
 
 
-def validate_perftest_endpoint(ctx, param, value: str) -> str:
-    if not isinstance(value, str):
-        raise click.BadParameter(
-            f"perftest_endpoint must be a URL (and thus a string and not {type(value)})"
-        )
-    if not value.startswith("https://") and not value.startswith("http://"):
-        raise click.BadParameter("perftest_endpoint must be a URL")
-    if "/perftest/" not in value:
-        raise click.BadParameter(
-            "perftest_endpoint must be a perftest endpoint (ant thus contain /perftest/)"
-        )
-    if (
-        value.endswith("/")
-        or value.endswith("perftest/")
-        or value.endswith("perftest")
-        or value.endswith("artifact")
-        or value.endswith("artifact/")
-    ):
-        raise click.BadParameter("perftest_endpoint must be a perftest endpoint")
-    return value
-
-
 @click.command()
 @click.argument(
-    "perftest_endpoint", type=click.STRING, callback=validate_perftest_endpoint
+    "artifact_endpoint", type=click.STRING, callback=validate_artifact_endpoint
 )
 @click.argument("filename", type=click.Path(exists=True))
 @click.option(
@@ -53,7 +32,7 @@ def validate_perftest_endpoint(ctx, param, value: str) -> str:
     "-t",
     "--auth-token",
     required=False,
-    help="Authentication token for talking to solidlab-perftest-server perftest endpoint",
+    help="Authentication token for talking to solidlab-perftest-server artifact endpoint",
 )
 @click.option(
     "--type",
@@ -65,7 +44,7 @@ def validate_perftest_endpoint(ctx, param, value: str) -> str:
 @click.option("--sub-type", prompt=True, type=click.STRING, help="The subtype.")
 @click.option("--description", prompt=True, help="Description of the file.")
 def main(
-    perftest_endpoint,
+    artifact_endpoint,
     filename,
     mime_type,
     attach_type,
@@ -76,7 +55,7 @@ def main(
     with requests.Session() as session:
         attachment_id, attachment_url = upload_artifact_file(
             session,
-            perftest_endpoint=perftest_endpoint,
+            artifact_endpoint=artifact_endpoint,
             attach_type=attach_type,
             sub_type=sub_type,
             description=description,
