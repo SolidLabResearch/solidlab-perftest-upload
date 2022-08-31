@@ -17,9 +17,15 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 logger.setLevel(logging.DEBUG)
 
 
+def validate_artifact_endpoint_click_helper(ctx, param, value: str) -> str:
+    return validate_artifact_endpoint(value)
+
+
 @click.command()
 @click.argument(
-    "artifact_endpoint", type=click.STRING, callback=validate_artifact_endpoint
+    "artifact_endpoint",
+    type=click.STRING,
+    callback=validate_artifact_endpoint_click_helper,
 )
 @click.argument("filename", type=click.Path(exists=True))
 @click.option(
