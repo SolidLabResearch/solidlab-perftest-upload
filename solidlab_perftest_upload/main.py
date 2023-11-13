@@ -49,6 +49,7 @@ def validate_artifact_endpoint_click_helper(ctx, param, value: str) -> str:
 )
 @click.option("--sub-type", prompt=True, type=click.STRING, help="The subtype.")
 @click.option("--description", prompt=True, help="Description of the file.")
+@click.version_option()
 def main(
     artifact_endpoint,
     filename,
